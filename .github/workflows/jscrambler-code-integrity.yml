@@ -31,8 +31,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm run build
+      - run: |
+          if [ -f package.json ]; then
+            npm ci
+            npm run build
+          else
+            echo "Skipping npm build: package.json not found"
+          fi
       - name: Jscrambler Code Integrity
         id: jscrambler
         # the complete list of inputs can be found here: https://github.com/marketplace/actions/jscrambler#inputs
