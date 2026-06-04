@@ -55,6 +55,7 @@
 RKIX3/
 ├─ index.html                       # Single-file AI Studio UI
 ├─ README.md                        # Trang giới thiệu chuyên nghiệp trên GitHub
+├─ scripts/smoke-test-static.mjs     # Smoke test HTML/JS trước khi deploy
 ├─ 1780136894650-Photoroom.png      # Logo chính
 └─ .github/workflows/static.yml     # Build _site + deploy GitHub Pages
 ```
@@ -66,17 +67,26 @@ python3 -m http.server 4173
 # mở http://127.0.0.1:4173
 ```
 
+## 🧪 Kiểm thử
+
+```bash
+node scripts/smoke-test-static.mjs
+```
+
+Smoke test sẽ kiểm tra cấu trúc route chính, sự tồn tại của chat input/send button, cú pháp JavaScript inline và guard chống render raw user message vào `innerHTML`.
+
 ## 🚀 Deploy GitHub Pages
 
-Workflow `.github/workflows/static.yml` sẽ:
+Workflow chính `.github/workflows/static.yml` sẽ:
 
 1. Checkout source.
-2. Setup GitHub Pages.
-3. Tạo `_site` chứa `index.html`, ảnh và file đánh dấu static site.
-4. Upload artifact Pages.
-5. Deploy bằng `actions/deploy-pages`.
+2. Chạy smoke test static app bằng `node scripts/smoke-test-static.mjs`.
+3. Setup GitHub Pages.
+4. Tạo `_site` chứa `index.html`, ảnh và file đánh dấu static site.
+5. Upload artifact Pages.
+6. Deploy bằng `actions/deploy-pages`.
 
-> Nếu GitHub vẫn báo lỗi deploy, hãy vào **Settings → Pages → Build and deployment** và chọn **Source: GitHub Actions** cho repository.
+> Nếu GitHub vẫn báo lỗi deploy, hãy vào **Settings → Pages → Build and deployment** và chọn **Source: GitHub Actions** cho repository. Các workflow mẫu khác trong `.github/workflows/` chỉ nên được bật khi dự án thật sự dùng stack tương ứng.
 
 ## 🏅 Huy hiệu dự án
 
@@ -121,7 +131,7 @@ Workflow `.github/workflows/static.yml` sẽ:
 
 ## ✅ Ba xung đột đã được chốt
 
-- **Workflow Pages**: chỉ giữ một pipeline static ở `.github/workflows/static.yml`, dùng `_site` làm artifact triển khai.
+- **Workflow Pages**: `.github/workflows/static.yml` là pipeline deploy chính, chạy smoke test rồi dùng `_site` làm artifact triển khai.
 - **Tài liệu GitHub**: README là trang giới thiệu chính thức của RKIX3, không còn nội dung cũ trùng lặp.
 - **Web app RKIX3**: `index.html` tiếp tục là nguồn giao diện single-file được workflow copy trực tiếp khi deploy.
 
