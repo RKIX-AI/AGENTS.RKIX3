@@ -7,5 +7,11 @@ export default defineConfig({
         port: 5173,
         host: '0.0.0.0',
         open: false,
+        allowedHosts: [
+            'localhost',
+            '127.0.0.1',
+            '.vercel.run',
+            'sb-1hyghd20pwee.vercel.run',
+        ],
     },
 });
