@@ -1,25 +1,166 @@
 <div align="center">
   <img src="1780136894650-Photoroom.png" width="520" alt="RKIX3 Logo">
 
-  <h1>RKIX3 AI Studio</h1>
-  <p><strong>Nền tảng AI hỗ trợ lập trình, build dự án, tự động hoá CLI/mobile-first và triển khai web app tốc độ cao.</strong></p>
+  <h1>RKIX3 AI Workspace</h1>
+  <p><strong>Modern React + TypeScript application for AI-powered development workspace with Vite.</strong></p>
 
   <p>
-    <img alt="GitHub Pages" src="https://img.shields.io/badge/GitHub%20Pages-Actions-22272e?style=for-the-badge&logo=githubpages&logoColor=white&labelColor=0d1117">
-    <img alt="Static Web" src="https://img.shields.io/badge/Static%20Web-HTML%20%2B%20Tailwind-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=white">
-    <img alt="AI Ready" src="https://img.shields.io/badge/AI-OpenAI%20%2B%20Gemini-7c3aed?style=for-the-badge&logo=openai&logoColor=white">
-    <img alt="Mobile First" src="https://img.shields.io/badge/Mobile-Termux%20Ready-16a34a?style=for-the-badge&logo=android&logoColor=white">
+    <img alt="React" src="https://img.shields.io/badge/React-18-61dafb?style=for-the-badge&logo=react&logoColor=white">
+    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178c6?style=for-the-badge&logo=typescript&logoColor=white">
+    <img alt="Vite" src="https://img.shields.io/badge/Vite-5-646cff?style=for-the-badge&logo=vite&logoColor=white">
+    <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind%20CSS-3-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=white">
   </p>
 
   <p>
-    <a href="./index.html"><strong>🚀 Mở giao diện RKIX3</strong></a>
+    <a href="#-getting-started"><strong>🚀 Get Started</strong></a>
     ·
-    <a href="#-tính-năng-nổi-bật">Tính năng</a>
+    <a href="#-features">Features</a>
     ·
-    <a href="#-vinh-danh-người-tạo-ra-rkix3">Vinh danh</a>
+    <a href="#-components">Components</a>
     ·
-    <a href="#-nhà-tài-trợ--đồng-hành-đặc-biệt">Nhà tài trợ</a>
+    <a href="#-deployment">Deployment</a>
   </p>
+</div>
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 16+
+- npm or yarn
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development Server
+
+```bash
+npm run dev
+```
+
+The app will start at `http://localhost:5173` with HMR (Hot Module Replacement).
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+Creates optimized build in `dist/` directory.
+
+### Preview Build
+
+```bash
+npm run preview
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   ├── Sidebar.tsx              # Main navigation sidebar
+│   ├── Header.tsx               # Top header with controls
+│   ├── MainContent.tsx          # Central content with prompt input
+│   ├── MiniRkxButton.tsx        # Floating navigation button
+│   ├── MiniRkxMenu.tsx          # Honeycomb menu (tổ ong)
+│   └── ApiSettingsModal.tsx     # API configuration modal
+├── App.tsx                      # Root component with state management
+└── main.tsx                     # React entry point
+```
+
+## ✨ Features
+
+- 🎨 **Modern Dark Theme** - Gradient effects with cyan/blue colors
+- 🤖 **AI Workspace** - Prompt input with voice recording simulation
+- 🎯 **MiniRkx Navigation** - Floating button with honeycomb menu
+- 📱 **Fully Responsive** - Mobile-first design for all screen sizes
+- ⌨️ **Type Safe** - Full TypeScript support
+- ⚡ **Fast Development** - Vite with HMR
+- 🎭 **Rich Animations** - Smooth transitions and transforms
+
+## 🧩 Components
+
+| Component | Purpose |
+|-----------|---------|
+| **Sidebar** | Navigation menu with search, projects, and features |
+| **Header** | Top bar with menu toggle, API settings, and login |
+| **MainContent** | Logo, prompt input, and feature cards |
+| **MiniRkxButton** | Floating button with tech-themed logo |
+| **MiniRkxMenu** | Honeycomb menu with 6 navigation items |
+| **ApiSettingsModal** | Configure API keys and settings |
+
+## 🛠️ Technologies
+
+- **React 18** - UI library
+- **TypeScript 5** - Type safety
+- **Vite 5** - Build tool and dev server
+- **Tailwind CSS 3** - Utility-first CSS framework
+- **Lucide React** - Icon library
+
+## 🚀 Deployment
+
+### Build
+
+```bash
+npm run build
+```
+
+The `dist/` folder is production-ready and can be deployed to:
+- Vercel
+- GitHub Pages
+- Netlify
+- Any static hosting
+
+### GitHub Pages
+
+1. Add to `package.json`:
+```json
+"homepage": "https://yourusername.github.io/AGENTS.RKIX3"
+```
+
+2. Build and deploy:
+```bash
+npm run build
+git add dist -f
+git commit -m "Deploy"
+git push origin main
+```
+
+## 📦 Scripts
+
+```bash
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run preview   # Preview production build locally
+npm run lint      # Run ESLint (optional)
+```
+
+## 🎯 State Management
+
+The app uses React's built-in `useState` hook for state management. Key states:
+- `sidebarOpen` - Mobile sidebar visibility
+- `menuOpen` - MiniRkx menu state
+- `showApiModal` - API settings modal visibility
+- `prompt` - User input text
+- `isRecording` - Voice recording state
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+MIT
+
+<div align="center">
+  <sub>Built with 💙 for RKIX3 — Modern, Fast, and Type-Safe</sub>
 </div>
 
 ---
