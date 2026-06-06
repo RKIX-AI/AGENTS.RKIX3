@@ -5,6 +5,7 @@ import MainContent from './components/MainContent'
 import MiniRkxButton from './components/MiniRkxButton'
 import MiniRkxMenu from './components/MiniRkxMenu'
 import ApiSettingsModal from './components/ApiSettingsModal'
+import './styles/minirkx.css'
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -12,10 +13,16 @@ export default function App() {
   const [showApiModal, setShowApiModal] = useState(false)
   const [prompt, setPrompt] = useState('')
   const [isRecording, setIsRecording] = useState(false)
+  const [currentPage, setCurrentPage] = useState('home')
 
   const handleMenuCommand = (command: string) => {
-    console.log(`Menu command: ${command}`)
+    console.log(`[v0] Menu command: ${command}`)
     // Handle menu commands here
+  }
+
+  const handleNavigate = (page: string) => {
+    console.log(`[v0] Navigating to: ${page}`)
+    setCurrentPage(page)
   }
 
   const handleSubmitPrompt = () => {
@@ -68,6 +75,7 @@ export default function App() {
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
         onMenuCommand={handleMenuCommand}
+        onNavigate={handleNavigate}
       />
 
       {/* API Settings Modal */}

@@ -2,20 +2,24 @@ interface MiniRkxMenuProps {
   isOpen: boolean
   onClose: () => void
   onMenuCommand: (command: string) => void
+  onNavigate?: (page: string) => void
 }
 
 const menuItems = [
-  { icon: '🏠', label: 'Trang chủ', command: 'Trang chủ' },
-  { icon: '📚', label: 'Thư viện', command: 'Thư viện' },
-  { icon: '📂', label: 'Dự án', command: 'Dự án' },
-  { icon: '⚙️', label: 'Ứng dụng', command: 'Ứng dụng' },
-  { icon: '💻', label: 'Codex', command: 'Codex' },
-  { icon: '🔧', label: 'Cài đặt', command: 'Cài đặt' },
+  { icon: '🏠', label: 'Trang chủ', command: 'home', page: 'home' },
+  { icon: '📚', label: 'Thư viện', command: 'library', page: 'library' },
+  { icon: '📂', label: 'Dự án', command: 'projects', page: 'projects' },
+  { icon: '⚙️', label: 'Ứng dụng', command: 'apps', page: 'apps' },
+  { icon: '💻', label: 'Codex', command: 'codex', page: 'codex' },
+  { icon: '🔧', label: 'Cài đặt', command: 'settings', page: 'settings' },
 ]
 
-export default function MiniRkxMenu({ isOpen, onClose, onMenuCommand }: MiniRkxMenuProps) {
-  const handleItemClick = (command: string) => {
+export default function MiniRkxMenu({ isOpen, onClose, onMenuCommand, onNavigate }: MiniRkxMenuProps) {
+  const handleItemClick = (command: string, page: string) => {
     onMenuCommand(command)
+    if (onNavigate) {
+      onNavigate(page)
+    }
     onClose()
   }
 
@@ -28,7 +32,7 @@ export default function MiniRkxMenu({ isOpen, onClose, onMenuCommand }: MiniRkxM
           <div
             key={index}
             className="minirkx-hex-item"
-            onClick={() => handleItemClick(item.command)}
+            onClick={() => handleItemClick(item.command, item.page)}
           >
             <div className="minirkx-hex-content">
               <div className="minirkx-hex-icon">{item.icon}</div>
