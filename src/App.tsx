@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import MainContent from './components/MainContent'
@@ -82,6 +83,9 @@ export default function App() {
       {showApiModal && (
         <ApiSettingsModal onClose={() => setShowApiModal(false)} />
       )}
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   )
 }
