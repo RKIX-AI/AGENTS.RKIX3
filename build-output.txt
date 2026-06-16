@@ -1,0 +1,5 @@
+
+> rkix3-workspace@1.0.0 build
+> tsc -b && vite build
+
+src/App.tsx(17,10): error TS6133: 'currentPage' is declared but its value is never read.

@@ -16,7 +16,7 @@ export default function Header({ onMenuOpen, onApiSettings }: HeaderProps) {
           <Menu className="w-5 h-5" />
         </button>
         <button className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-900 square-flat transition-all">
-          <Scan className="w-4.5 h-4.5" />
+          <Scan className="w-[18px] h-[18px]" />
         </button>
       </div>
 
