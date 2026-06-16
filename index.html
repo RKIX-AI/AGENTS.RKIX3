@@ -1,119 +1,251 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RKIX3 — Developer Workspace Platform</title>
-  <meta name="description" content="RKIX3 is a dark-first developer workspace with AI tools, project management, code studio, build center, library hub, integrations, and profile settings." />
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #050712; --panel: rgba(12,18,35,.82); --panel-2: rgba(20,29,52,.72);
-      --line: rgba(255,255,255,.11); --line-strong: rgba(0,210,255,.38);
-      --text: #f7fbff; --muted: #a5afc2; --faint: #657189;
-      --cyan: #00d2ff; --blue: #4f7cff; --violet: #8b5cf6; --lime: #9cff6e; --amber: #fbbf24;
-      --shadow: 0 24px 80px rgba(0,0,0,.36); --radius: 28px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh; color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(0,210,255,.18), transparent 34rem),
-        radial-gradient(circle at 82% 8%, rgba(139,92,246,.22), transparent 31rem),
-        linear-gradient(135deg, #050712 0%, #09101e 55%, #04060d 100%);
-      overflow-x: hidden;
-    }
-    body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .5; background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px); background-size: 42px 42px; }
-    button, input { font: inherit; }
-    button { cursor: pointer; }
-    .app { position: relative; min-height: 100vh; }
-    .sidebar { position: fixed; inset: 0 auto 0 0; width: 280px; z-index: 20; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); background: rgba(8,13,27,.86); backdrop-filter: blur(20px); }
-    .brand { border: 0; background: transparent; padding: 0; display: flex; align-items: center; margin-bottom: 28px; }
-    .brand img { height: 52px; filter: drop-shadow(0 0 22px rgba(0,210,255,.45)); }
-    .new-session { width: 100%; padding: 14px; margin-bottom: 18px; border: 1px solid rgba(0,210,255,.24); border-radius: 20px; color: var(--text); background: rgba(0,210,255,.09); text-align: left; font-weight: 800; }
-    .nav { display: grid; gap: 8px; }
-    .nav-btn { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 13px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 18px; transition: .2s ease; text-align: left; }
-    .nav-btn:hover, .nav-btn.active { color: white; border-color: var(--line-strong); background: linear-gradient(90deg, rgba(79,124,255,.22), rgba(0,210,255,.08)); }
-    .capacity { border: 1px solid var(--line); border-radius: 24px; padding: 16px; background: rgba(255,255,255,.04); color: var(--muted); font-size: 12px; }
-    .bar { height: 8px; border-radius: 99px; overflow: hidden; background: rgba(255,255,255,.1); margin: 10px 0; }
-    .bar > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--violet)); }
-    main { margin-left: 280px; min-height: 100vh; padding-bottom: 40px; }
-    header { position: relative; z-index: 10; padding: 18px 32px; border-bottom: 1px solid var(--line); background: rgba(8,13,27,.78); backdrop-filter: blur(18px); display: flex; align-items: center; justify-content: space-between; gap: 18px; }
-    .eyebrow { margin: 0 0 4px; color: var(--cyan); font-size: 11px; font-weight: 900; letter-spacing: .32em; text-transform: uppercase; }
-    h1, h2, h3, h4, p { margin-top: 0; }
-    h1 { margin: 0; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.04em; }
-    .top-actions { display: flex; gap: 12px; align-items: center; }
-    .branch { border: 1px solid var(--line); border-radius: 16px; background: rgba(0,0,0,.22); color: var(--muted); padding: 10px 12px; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; }
-    .shell { max-width: 1500px; padding: 28px 32px; margin: 0 auto; display: grid; gap: 22px; }
-    .page { display: none; animation: rise .28s ease-out both; } .page.active { display: grid; gap: 22px; }
-    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .card { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(145deg, var(--panel), rgba(10,16,32,.66)); box-shadow: var(--shadow); backdrop-filter: blur(18px); padding: 24px; }
-    .hero { min-height: 560px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .8fr); gap: 22px; }
-    .hero-copy { position: relative; overflow: hidden; padding: 56px 36px 36px; display: flex; flex-direction: column; justify-content: flex-start; }
-    .hero-copy::after { content: ""; position: absolute; right: -80px; top: -80px; width: 280px; height: 280px; border-radius: 999px; background: rgba(0,210,255,.13); filter: blur(14px); }
-    .hero h2 { position: relative; z-index: 1; margin: 14px 0 18px; font-size: clamp(38px, 5.4vw, 66px); line-height: 1.02; letter-spacing: -.07em; }
-    .lead { color: var(--muted); font-size: 18px; line-height: 1.65; max-width: 760px; }
-    .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-    .btn { border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.05); color: var(--text); padding: 12px 16px; font-weight: 900; transition: .2s ease; }
-    .btn:hover { transform: translateY(-1px); border-color: var(--line-strong); }
-    .btn.primary { color: #06111c; background: var(--cyan); border-color: var(--cyan); }
-    .badge { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(0,210,255,.25); border-radius: 999px; background: rgba(0,210,255,.1); color: var(--cyan); padding: 6px 10px; font-size: 11px; font-weight: 900; }
-    .grid { display: grid; gap: 16px; } .cols-2 { grid-template-columns: repeat(2, minmax(0,1fr)); } .cols-3 { grid-template-columns: repeat(3, minmax(0,1fr)); } .cols-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
-    .metric strong { display: block; margin-top: 8px; font-size: 34px; letter-spacing: -.05em; } .muted { color: var(--muted); } .faint { color: var(--faint); }
-    .project, .mini-card, .task { border: 1px solid var(--line); border-radius: 22px; background: rgba(255,255,255,.04); padding: 18px; transition: .2s ease; }
-    .project:hover, .mini-card:hover, .task:hover { border-color: var(--line-strong); transform: translateY(-1px); }
-    .code { font-family: "JetBrains Mono", ui-monospace, monospace; white-space: pre-wrap; color: #c8d7ff; background: #050813; border-radius: 0 0 var(--radius) var(--radius); padding: 22px; min-height: 520px; overflow: auto; line-height: 1.7; }
-    .window-head { border-bottom: 1px solid var(--line); padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; }
-    .dots { display: flex; gap: 7px; } .dots span { width: 12px; height: 12px; border-radius: 99px; display: block; }
-    .chat { height: 520px; overflow: auto; display: grid; gap: 14px; align-content: start; }
-    .bubble { max-width: 76%; border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,.04); padding: 16px; } .bubble.user { justify-self: end; border-color: rgba(0,210,255,.35); background: rgba(0,210,255,.1); }
-    .chat-input { display: flex; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; } input { width: 100%; border: 1px solid var(--line); border-radius: 18px; background: rgba(0,0,0,.26); color: var(--text); padding: 13px 15px; outline: none; } input:focus { border-color: var(--line-strong); }
-    .kanban { grid-template-columns: repeat(4, minmax(220px,1fr)); align-items: start; overflow-x: auto; } .lane { border: 1px solid var(--line); border-radius: 24px; background: rgba(0,0,0,.18); padding: 14px; min-height: 360px; }
-    .roadmap-row { display: grid; grid-template-columns: 170px 1fr 80px; gap: 14px; align-items: center; margin: 12px 0; }
-    .bottom-nav, .drawer, .mobile-menu { display: none; }
-    @media (max-width: 1100px) { .cols-4 { grid-template-columns: repeat(2,1fr); } .cols-3 { grid-template-columns: repeat(2,1fr); } .hero { grid-template-columns: 1fr; } }
-    @media (max-width: 860px) { .sidebar { display:none; } main { margin-left:0; } header { padding: 15px; } .shell { padding: 16px; } .top-actions { display:none; } .mobile-menu { display:block; } .cols-2,.cols-3,.cols-4 { grid-template-columns: 1fr; } .hero-copy { padding: 24px; } .bottom-nav { display:grid; position:fixed; bottom:0; inset-inline:0; z-index:30; grid-template-columns:repeat(5,1fr); gap:4px; padding:8px; border-top:1px solid var(--line); background:rgba(8,13,27,.92); backdrop-filter:blur(18px); } .bottom-nav .nav-btn { justify-content:center; font-size:11px; padding:10px 4px; } .drawer.open { display:block; position:fixed; inset:0; z-index:40; background:rgba(0,0,0,.68); } .drawer-panel { width:min(84vw,320px); height:100%; padding:20px; background:rgba(8,13,27,.95); border-right:1px solid var(--line); } }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar"><div><button class="brand" data-route="home"><img src="1780136894650-Photoroom.png" alt="RKIX3 Logo"></button><button class="new-session" data-route="ai">✨ New AI session<br><small class="muted">Generate, debug, plan, and ship.</small></button><nav id="sideNav" class="nav"></nav></div><div class="capacity"><div class="row" style="justify-content:space-between"><span>Build capacity</span><b>82%</b></div><div class="bar"><span style="width:82%"></span></div><span>4 agents active · 12 tasks queued · 3 deploy targets ready</span></div></aside>
-    <main><header><div class="row"><button id="mobileMenu" class="btn mobile-menu">☰</button><div><p class="eyebrow">RKIX3 Command Layer</p><h1 id="pageTitle">Dashboard</h1></div></div><div class="top-actions"><div class="branch">main · <span style="color:var(--lime)">healthy</span></div><button class="btn primary" data-route="profile">Customize</button></div></header><div class="shell"><section id="home" class="page active"></section><section id="ai" class="page"></section><section id="workspace" class="page"></section><section id="code" class="page"></section><section id="build" class="page"></section><section id="library" class="page"></section><section id="integrations" class="page"></section><section id="profile" class="page"></section></div></main>
-    <div id="drawer" class="drawer"><div class="drawer-panel"><div class="row" style="justify-content:space-between;margin-bottom:18px"><img src="1780136894650-Photoroom.png" alt="RKIX3" style="height:42px"><button id="drawerClose" class="btn">✕</button></div><nav id="drawerNav" class="nav"></nav></div></div><nav id="bottomNav" class="bottom-nav"></nav>
-  </div>
-<script>
-const entities={projects:[{id:'PRJ-101',name:'Nebula Console',stack:'Next.js · Supabase',status:'Building',progress:76,color:'var(--cyan)',due:'Jun 12',owner:'RKIX3 Core'},{id:'PRJ-102',name:'AgentOps CLI',stack:'Node · OpenAI',status:'Planning',progress:42,color:'var(--violet)',due:'Jun 20',owner:'Automation'},{id:'PRJ-103',name:'Docs Pulse',stack:'Astro · MDX',status:'Review',progress:88,color:'var(--lime)',due:'Jun 08',owner:'Library Hub'},{id:'PRJ-104',name:'Deploy Radar',stack:'Vercel · GitHub',status:'Live',progress:100,color:'var(--amber)',due:'Live',owner:'Build Center'}],tasks:[{id:'TSK-1',title:'Wire AI chat context memory',status:'todo',priority:'High',project:'Nebula Console'},{id:'TSK-2',title:'Design roadmap swimlanes',status:'todo',priority:'Medium',project:'AgentOps CLI'},{id:'TSK-3',title:'Create framework template cards',status:'doing',priority:'High',project:'Deploy Radar'},{id:'TSK-4',title:'Add snippet copy actions',status:'doing',priority:'Medium',project:'Docs Pulse'},{id:'TSK-5',title:'Validate integration settings',status:'review',priority:'High',project:'Deploy Radar'},{id:'TSK-6',title:'Publish starter docs',status:'done',priority:'Low',project:'Docs Pulse'}],snippets:[{id:'SNP-01',title:'OpenAI Responses proxy',lang:'ts',code:`export async function POST(req) {
-  const { prompt } = await req.json();
-  const result = await runAgent({ prompt, project: 'RKIX3' });
-  return Response.json({ output: result.text });
-}`},{id:'SNP-02',title:'Vercel deploy hook',lang:'bash',code:`curl -X POST "$VERCEL_DEPLOY_HOOK_URL"
-echo 'Deploy queued for RKIX3 workspace'`},{id:'SNP-03',title:'Supabase project table',lang:'sql',code:`create table projects (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  status text default 'planning',
-  created_at timestamptz default now()
-);`}],messages:[{role:'agent',text:'RKIX3 Agent online. I can turn goals into code, tasks, docs, deploy plans, and reusable snippets.'},{role:'user',text:'Create a typed API route for generating release notes.'},{role:'agent',text:'I drafted the route, validation schema, test plan, and deployment checklist. Want a Next.js or Express version?'}]};
-const routes=[['home','Dashboard','⌘'],['ai','AI Workspace','✦'],['workspace','Projects','▦'],['code','Code Studio','{}'],['build','Build Center','▲'],['library','Library Hub','▤'],['integrations','Integrations','⚡'],['profile','Profile','◉']];
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], esc=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const card=(inner,cls='')=>`<div class="card ${cls}">${inner}</div>`, badge=t=>`<span class="badge">${t}</span>`;
-function navHTML(short=false){return routes.filter(r=>!short||['home','ai','workspace','code','profile'].includes(r[0])).map(r=>`<button class="nav-btn" data-route="${r[0]}"><b>${r[2]}</b><span>${short?r[1].split(' ')[0]:r[1]}</span></button>`).join('')}
-function metric(label,value){return card(`<p class="muted">${label}</p><div class="metric"><strong>${value}</strong></div>`)}
-function projectCard(p){return `<article class="project"><div class="row" style="justify-content:space-between"><span class="faint" style="font-family:monospace">${p.id}</span><span style="width:10px;height:10px;border-radius:50%;background:${p.color};box-shadow:0 0 16px ${p.color}"></span></div><h3>${p.name}</h3><p class="muted">${p.stack}</p><div class="bar"><span style="width:${p.progress}%;background:${p.color}"></span></div><div class="row" style="justify-content:space-between"><small class="muted">${p.status}</small><small>${p.progress}%</small></div></article>`}
-function taskCard(t){return `<article class="task"><div class="row" style="justify-content:space-between"><small class="faint">${t.id}</small><small style="color:${t.priority==='High'?'var(--amber)':t.priority==='Medium'?'var(--cyan)':'var(--muted)'}">${t.priority}</small></div><h4>${t.title}</h4><p class="muted">${t.project}</p></article>`}
-function renderHome(){$('#home').innerHTML=`<div class="hero"><div class="card hero-copy"><p class="eyebrow">Developer Workspace Platform</p><h2>Build faster with AI, projects, code, docs, and deploys in one command deck.</h2><p class="lead">RKIX3 combines an AI workspace, project roadmap, code studio, build center, library hub, integrations, and profile controls in a sleek dark-first developer UI.</p><div class="row"><button class="btn primary" data-route="ai">Launch AI Workspace</button><button class="btn" data-route="workspace">View Roadmap</button></div></div>${card(`<div class="row" style="justify-content:space-between"><h3>Live agent stream</h3>${badge('AI Online')}</div><div class="grid"><p class="mini-card">✓ Indexed 3 snippets into Code Studio</p><p class="mini-card">→ Generated deploy plan for Vercel + GitHub</p><p class="mini-card">● Monitoring 4 active projects</p></div>`)}</div><div class="grid cols-4">${metric('Active projects',entities.projects.length)}${metric('Open tasks',entities.tasks.filter(t=>t.status!=='done').length)}${metric('Code snippets',entities.snippets.length)}${metric('Integrations','8')}</div>${card(`<div class="row" style="justify-content:space-between"><div><h2>Project pulse</h2><p class="muted">Roadmap-ready entities with progress, owners, and delivery status.</p></div><button class="btn" data-route="workspace">Manage projects</button></div><div class="grid cols-4">${entities.projects.map(projectCard).join('')}</div>`)}`}
-function renderAI(){$('#ai').innerHTML=`<div class="grid" style="grid-template-columns:minmax(0,1fr) 380px"><div class="card"><div class="row" style="justify-content:space-between"><div><h2>AI Workspace</h2><p class="muted">Chat interface with an AI agent, mode switcher, and prompt accelerators.</p></div>${badge('Agent Ready')}</div><div id="chatLog" class="chat"></div><div class="row" style="margin:14px 0">${['Generate code','Debug issue','Plan sprint','Write docs'].map(x=>`<button class="btn chip">${x}</button>`).join('')}</div><div class="chat-input"><input id="chatInput" placeholder="Ask RKIX3 to build, refactor, document, or deploy..."><button id="sendChat" class="btn primary">Send</button></div></div>${card(`<h2>AI Tools</h2><div class="grid">${['Code generator','Task decomposer','Release note writer','Security reviewer','API schema planner'].map((x,i)=>`<button class="mini-card" style="text-align:left"><b>${x}</b><br><small class="muted">Run with ${i%2?'fast':'deep'} reasoning mode</small></button>`).join('')}</div>`)}</div>`; renderChat()}
-function renderChat(){$('#chatLog').innerHTML=entities.messages.map(m=>`<div class="bubble ${m.role==='user'?'user':''}"><small class="faint">${m.role==='user'?'YOU':'RKIX3 AGENT'}</small><p>${esc(m.text)}</p></div>`).join('')}
-function renderWorkspace(){const cols=[['todo','Todo'],['doing','In progress'],['review','Review'],['done','Done']];$('#workspace').innerHTML=`${card(`<div class="row" style="justify-content:space-between"><div><h2>Project & Task Management</h2><p class="muted">Kanban board, project list, and roadmap planning view.</p></div>${badge('6 tasks')}</div><div class="grid kanban">${cols.map(([k,l])=>`<div class="lane"><h3>${l}</h3><div class="grid">${entities.tasks.filter(t=>t.status===k).map(taskCard).join('')}</div></div>`).join('')}</div>`)}<div class="grid cols-2">${card(`<h2>Projects List</h2><div class="grid">${entities.projects.map(p=>`<div class="mini-card"><b>${p.name}</b><p class="muted">${p.owner} · ${p.stack} · ${p.due}</p></div>`).join('')}</div>`)}${card(`<h2>Roadmap View</h2>${entities.projects.map(p=>`<div class="roadmap-row"><b>${p.name}</b><div class="bar"><span style="width:${p.progress}%;background:${p.color}"></span></div><span class="muted">${p.due}</span></div>`).join('')}`)}</div>`}
-function renderCode(){$('#code').innerHTML=`<div class="grid" style="grid-template-columns:minmax(0,1fr) 420px"><div class="card" style="padding:0"><div class="window-head"><div><h2>Code Studio</h2><p class="muted">Editor surface with snippets, templates, and AI coding actions.</p></div><div class="dots"><span style="background:#f87171"></span><span style="background:var(--amber)"></span><span style="background:var(--lime)"></span></div></div><pre id="editorCode" class="code">${esc(entities.snippets[0].code)}</pre></div>${card(`<h2>Snippets Manager</h2><div class="grid">${entities.snippets.map(s=>`<button class="mini-card snippet" data-code="${esc(s.code)}" style="text-align:left"><b>${s.title}</b><br><small style="color:var(--cyan);font-family:monospace">.${s.lang}</small></button>`).join('')}</div><h2 style="margin-top:24px">AI Coding</h2><div class="grid cols-2">${['Explain','Refactor','Test','Optimize'].map(x=>`<button class="btn">${x}</button>`).join('')}</div>`)}</div>${card(`<h2>Code Templates</h2><div class="grid cols-3">${['Next.js API route','Express worker','Astro docs site'].map(x=>`<div class="mini-card"><h3>${x}</h3><p class="muted">Starter files, env notes, and test checklist.</p></div>`).join('')}</div>`)}`}
-function renderBuild(){const f=['Next.js','Vite React','Astro','SvelteKit','Node API','Static HTML'];$('#build').innerHTML=card(`<div class="row" style="justify-content:space-between"><div><h2>Build Center</h2><p class="muted">Create, configure, and queue builds across common frameworks.</p></div><button class="btn primary">Queue build</button></div><div class="grid cols-3">${f.map((x,i)=>`<div class="mini-card"><div class="row" style="justify-content:space-between"><span>▲</span>${badge(i%2?'Template':'Ready')}</div><h2>${x}</h2><p class="muted">Includes scripts, env schema, CI hints, and deployment presets.</p><button class="btn">Use framework</button></div>`).join('')}</div>`)}
-function renderLibrary(){const docs=['React patterns','OpenAI Responses API','Supabase schema','Vercel deployment','GitHub Actions','Tailwind tokens'];$('#library').innerHTML=card(`<h2>Library Hub</h2><p class="muted">Framework and API documentation cards for rapid implementation.</p><div class="grid cols-3">${docs.map(d=>`<article class="mini-card"><h3>▤ ${d}</h3><p class="muted">Curated usage notes, starter snippets, edge cases, and production checklist.</p></article>`).join('')}</div>`)}
-function renderIntegrations(){const xs=['GitHub','Vercel','Supabase','OpenAI','Google Gemini','Slack','Linear','Notion'];$('#integrations').innerHTML=card(`<h2>Integration Center</h2><p class="muted">Connect source control, deploy targets, databases, AI providers, and team tools.</p><div class="grid cols-4">${xs.map((x,i)=>`<div class="mini-card"><div class="row" style="justify-content:space-between"><span>⚡</span><small style="color:${i<4?'var(--lime)':'var(--faint)'}">${i<4?'Connected':'Available'}</small></div><h2>${x}</h2><button class="btn">${i<4?'Configure':'Connect'}</button></div>`).join('')}</div>`)}
-function renderProfile(){$('#profile').innerHTML=`<div class="grid cols-2">${card(`<div style="text-align:center"><div style="margin:auto;width:96px;height:96px;border-radius:28px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#06111c;font-size:32px;font-weight:900">RK</div><h2>RKIX3 Builder</h2><p class="muted">Full-stack AI workspace operator</p><div class="grid cols-3"><b>12<br><small class="muted">Projects</small></b><b>48<br><small class="muted">Tasks</small></b><b>23<br><small class="muted">Builds</small></b></div></div>`)}${card(`<h2>Theme & Settings</h2><div class="grid"><label class="mini-card"><b>Accent intensity</b><input type="range" value="82"></label><label class="mini-card"><input type="checkbox" checked> Glassmorphism panels</label><label class="mini-card"><input type="checkbox" checked> Compact code mode</label><button id="themeToggle" class="btn primary">Toggle theme</button></div>`)}</div>`}
-function setRoute(id){const r=routes.find(x=>x[0]===id)||routes[0];$$('.page').forEach(p=>p.classList.toggle('active',p.id===r[0]));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.route===r[0]));$('#pageTitle').textContent=r[1];$('#drawer').classList.remove('open');history.replaceState(null,'',window.location.pathname)}
-function bind(){document.body.addEventListener('click',e=>{const r=e.target.closest('[data-route]');if(r)setRoute(r.dataset.route);const c=e.target.closest('.chip');if(c)$('#chatInput').value=c.textContent+': ';const s=e.target.closest('.snippet');if(s)$('#editorCode').textContent=s.dataset.code;if(e.target.id==='sendChat'){const input=$('#chatInput');if(!input.value.trim())return;entities.messages.push({role:'user',text:input.value.trim()},{role:'agent',text:'Queued an RKIX3 implementation plan with entity updates, code tasks, tests, and deploy notes.'});input.value='';renderChat();$('#chatLog').scrollTop=$('#chatLog').scrollHeight}if(e.target.id==='themeToggle')document.body.classList.toggle('light')});$('#mobileMenu').onclick=()=>$('#drawer').classList.add('open');$('#drawerClose').onclick=()=>$('#drawer').classList.remove('open')}
-function init(){sideNav.innerHTML=navHTML();drawerNav.innerHTML=navHTML();bottomNav.innerHTML=navHTML(true);renderHome();renderAI();renderWorkspace();renderCode();renderBuild();renderLibrary();renderIntegrations();renderProfile();bind();setRoute(location.hash.slice(1)||'home')}
-init();
-</script>
-</body>
+<html lang="vi" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RKIX3 AI - Lập trình, Code, Build, Tự động hoá</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              rkixDark: '#02050c',
+              rkixSidebar: '#050915',
+              rkixBorder: '#102142',
+              rkixBlue: '#0052cc',
+              rkixLightBlue: '#00d2ff',
+              rkixTextGray: '#52525b'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #02050c;
+        background-image: radial-gradient(circle at 50% 30%, rgba(0, 82, 204, 0.15) 0%, transparent 65%);
+        background-attachment: fixed;
+      }
+
+      .square-flat {
+        border-radius: 0px !important;
+      }
+
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* MiniRkx Floating Button Styles */
+      .minirkx-button {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #0052cc 0%, #00d2ff 100%);
+        border: 2px solid rgba(0, 210, 255, 0.4);
+        z-index: 35;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 24px rgba(0, 210, 255, 0.3), 0 8px 32px rgba(0, 82, 204, 0.2);
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .minirkx-button:hover {
+        transform: scale(1.08);
+        box-shadow: 0 0 32px rgba(0, 210, 255, 0.5), 0 12px 48px rgba(0, 82, 204, 0.3);
+        border-color: rgba(0, 210, 255, 0.6);
+      }
+
+      .minirkx-button:active {
+        transform: scale(0.95);
+      }
+
+      .minirkx-button.open {
+        transform: rotate(45deg);
+      }
+
+      .minirkx-logo {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .minirkx-logo svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.4));
+      }
+
+      @keyframes minirkx-pulse-glow {
+        0%, 100% {
+          box-shadow: 0 0 24px rgba(0, 210, 255, 0.3), 0 8px 32px rgba(0, 82, 204, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 36px rgba(0, 210, 255, 0.5), 0 12px 48px rgba(0, 82, 204, 0.35);
+        }
+      }
+
+      .minirkx-button.pulse {
+        animation: minirkx-pulse-glow 2s ease-in-out infinite;
+      }
+
+      /* Honeycomb Menu */
+      .minirkx-menu {
+        position: fixed;
+        inset: 0;
+        z-index: 30;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .minirkx-menu.open {
+        pointer-events: auto;
+        opacity: 1;
+      }
+
+      .minirkx-menu-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0);
+        transition: background 0.3s ease;
+        cursor: pointer;
+      }
+
+      .minirkx-menu.open .minirkx-menu-backdrop {
+        background: rgba(0, 0, 0, 0.4);
+      }
+
+      .minirkx-honeycomb {
+        position: absolute;
+        bottom: 32px;
+        right: 32px;
+        width: 360px;
+        height: 360px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .minirkx-hex-item {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0) translate(0, 0);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .minirkx-menu.open .minirkx-hex-item {
+        opacity: 1;
+        transform: scale(1) translate(var(--tx), var(--ty));
+      }
+
+      .minirkx-hex-item:nth-child(1) { --tx: 0px; --ty: -90px; transition-delay: 0.05s; }
+      .minirkx-hex-item:nth-child(2) { --tx: 78px; --ty: -45px; transition-delay: 0.1s; }
+      .minirkx-hex-item:nth-child(3) { --tx: 78px; --ty: 45px; transition-delay: 0.15s; }
+      .minirkx-hex-item:nth-child(4) { --tx: 0px; --ty: 90px; transition-delay: 0.2s; }
+      .minirkx-hex-item:nth-child(5) { --tx: -78px; --ty: 45px; transition-delay: 0.25s; }
+      .minirkx-hex-item:nth-child(6) { --tx: -78px; --ty: -45px; transition-delay: 0.3s; }
+
+      .minirkx-hex-content {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(0, 82, 204, 0.8) 0%, rgba(0, 210, 255, 0.8) 100%);
+        border: 2px solid rgba(0, 210, 255, 0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(0, 82, 204, 0.2);
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .minirkx-hex-item:hover .minirkx-hex-content {
+        transform: scale(1.12);
+        border-color: rgba(0, 210, 255, 0.8);
+        box-shadow: 0 8px 32px rgba(0, 210, 255, 0.4);
+        background: linear-gradient(135deg, rgba(0, 82, 204, 1) 0%, rgba(0, 210, 255, 1) 100%);
+      }
+
+      .minirkx-hex-icon {
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .minirkx-hex-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: white;
+        text-align: center;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      @media (max-width: 768px) {
+        .minirkx-button {
+          width: 64px;
+          height: 64px;
+          bottom: 24px;
+          right: 24px;
+        }
+
+        .minirkx-honeycomb {
+          width: 280px;
+          height: 280px;
+          bottom: 24px;
+          right: 24px;
+        }
+
+        .minirkx-hex-item:nth-child(1) { --tx: 0px; --ty: -70px; }
+        .minirkx-hex-item:nth-child(2) { --tx: 60px; --ty: -35px; }
+        .minirkx-hex-item:nth-child(3) { --tx: 60px; --ty: 35px; }
+        .minirkx-hex-item:nth-child(4) { --tx: 0px; --ty: 70px; }
+        .minirkx-hex-item:nth-child(5) { --tx: -60px; --ty: 35px; }
+        .minirkx-hex-item:nth-child(6) { --tx: -60px; --ty: -35px; }
+
+        .minirkx-hex-content {
+          width: 72px;
+          height: 72px;
+        }
+
+        .minirkx-hex-icon {
+          font-size: 20px;
+        }
+
+        .minirkx-hex-label {
+          font-size: 9px;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-zinc-200 min-h-screen flex flex-col overflow-x-hidden relative select-none">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
